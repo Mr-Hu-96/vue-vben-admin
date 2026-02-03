@@ -94,4 +94,53 @@ function mapTree<T, V extends Record<string, any>>(
   });
 }
 
-export { filterTree, mapTree, traverseTreeValues };
+export interface BuildTreeOptions<T> {
+  childrenKey?: string;
+  idKey?: keyof T;
+  parentKey?: keyof T;
+  rootValue?: any;
+}
+
+/**
+ * 平级数组通过 parentId 转成 tree
+ */
+function buildTree<T extends Record<string, any>>(
+  list: T[],
+  options: BuildTreeOptions<T> = {},
+): T[] {
+  const {
+    idKey = 'id',
+    parentKey = 'parentId',
+    childrenKey = 'children',
+    rootValue = 0,
+  } = options;
+  const nodeMap = new Map<any, T & { [key: string]: any }>();
+  const result: (T & { [key: string]: any })[] = [];
+
+  // 1️⃣ 先复制一份，避免污染原数据
+  list.forEach((item) => {
+    nodeMap.set(item[idKey], { ...item, [childrenKey]: [] });
+  });
+
+  // 2️⃣ 建立父子关系
+  list.forEach((item) => {
+    const parentId = item[parentKey];
+
+    const node = nodeMap.get(item[idKey]);
+
+    if (!node) {
+      return;
+    }
+    const parentNode = nodeMap.get(parentId);
+
+    if (parentNode && parentId !== rootValue) {
+      parentNode[childrenKey].push(node);
+    } else {
+      result.push(node);
+    }
+  });
+
+  return result;
+}
+
+export { buildTree, filterTree, mapTree, traverseTreeValues };

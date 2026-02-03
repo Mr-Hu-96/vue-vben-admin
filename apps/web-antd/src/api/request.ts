@@ -7,7 +7,6 @@ import { useAppConfig } from '@vben/hooks';
 import { preferences } from '@vben/preferences';
 import {
   authenticateResponseInterceptor,
-  defaultResponseInterceptor,
   errorMessageResponseInterceptor,
   RequestClient,
 } from '@vben/request';
@@ -72,13 +71,42 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   });
 
   // 处理返回的响应数据格式
-  client.addResponseInterceptor(
-    defaultResponseInterceptor({
-      codeField: 'code',
-      dataField: 'data',
-      successCode: 0,
-    }),
-  );
+  client.addResponseInterceptor({
+    fulfilled: async (response) => {
+      const res = response.data;
+
+      if (!res) return response;
+
+      const { code, msg } = res;
+
+      // 若依成功码
+      if (code === 200) {
+        // 1️⃣ 优先返回 data
+        if ('data' in res) {
+          return res.data;
+        }
+
+        // 2️⃣ 列表接口，返回 rows + total
+        if ('rows' in res) {
+          return {
+            rows: res.rows,
+            total: res.total,
+          };
+        }
+
+        // 3️⃣ 既没有 data 也没有 rows（新增/删除）
+        return res;
+      }
+      // ⭐ 若依业务 401（关键）
+      if (code === 401) {
+        await doReAuthenticate();
+        throw res;
+      }
+      // 非 200
+      message.error(msg || '请求失败');
+      throw res;
+    },
+  });
 
   // token过期的处理
   client.addResponseInterceptor(

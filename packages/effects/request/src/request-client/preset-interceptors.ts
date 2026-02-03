@@ -9,7 +9,7 @@ import axios from 'axios';
 export const defaultResponseInterceptor = ({
   codeField = 'code',
   dataField = 'data',
-  successCode = 0,
+  successCode = 200,
 }: {
   /** 响应数据中代表访问结果的字段名 */
   codeField: string;
@@ -61,7 +61,7 @@ export const authenticateResponseInterceptor = ({
     rejected: async (error) => {
       const { config, response } = error;
       // 如果不是 401 错误，直接抛出异常
-      if (response?.status !== 401) {
+      if (response?.data?.code !== 401) {
         throw error;
       }
       // 判断是否启用了 refreshToken 功能

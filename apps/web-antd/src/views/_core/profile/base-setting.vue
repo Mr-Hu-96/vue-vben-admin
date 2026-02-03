@@ -57,7 +57,12 @@ const formSchema = computed((): VbenFormSchema[] => {
 
 onMounted(async () => {
   const data = await getUserInfoApi();
-  profileBaseSettingRef.value.getFormApi().setValues(data);
+  const { nickName, userName, remark } = data.user;
+  profileBaseSettingRef.value.getFormApi().setValues({
+    realName: nickName,
+    username: userName,
+    introduction: remark,
+  });
 });
 </script>
 <template>
