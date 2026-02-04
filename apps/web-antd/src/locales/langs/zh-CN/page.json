@@ -8,8 +8,9 @@
     "profile": "个人中心"
   },
   "dashboard": {
-    "title": "概览",
+    "title": "供应商管理",
     "analytics": "分析页",
-    "workspace": "工作台"
+    "workspace": "工作台",
+    "buyDetail": "采购明细"
   }
 }

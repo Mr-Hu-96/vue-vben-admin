@@ -31,6 +31,18 @@ const routes: RouteRecordRaw[] = [
           title: $t('page.dashboard.workspace'),
         },
       },
+      {
+        path: 'workspace/detail/:id',
+        name: 'WorkspaceDetail',
+        component: () => import('#/views/dashboard/workspace/detail.vue'),
+        meta: {
+          title: $t('page.dashboard.buyDetail'),
+          hideMenu: true,
+          activePath: '/workspace',
+          hideInBreadcrumb: true,
+          hideInMenu: true,
+        },
+      },
     ],
   },
 ];

@@ -34,12 +34,12 @@ withDefaults(defineProps<Props>(), {
       </div>
 
       <div class="mx-12 flex flex-col justify-center text-right md:mx-16">
-        <span class="text-foreground/80"> 项目 </span>
-        <span class="text-2xl">8</span>
+        <span class="text-foreground/80"> 订单 </span>
+        <span class="text-2xl">15</span>
       </div>
       <div class="mr-4 flex flex-col justify-center text-right md:mr-10">
         <span class="text-foreground/80"> 团队 </span>
-        <span class="text-2xl">300</span>
+        <span class="text-2xl">5</span>
       </div>
     </div>
   </div>
